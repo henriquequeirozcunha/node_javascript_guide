@@ -13,6 +13,8 @@ app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const Product = require('./models/product');
+const User = require('./models/user');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -22,11 +24,31 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-sequelize.sync().then(result => {
-    console.log('app listening to port 3000')
-    app.listen(3000);
-})
-.catch(err => {
-    console.log(err)
-})
+Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+User.hasMany(Product);
 
+const seedData = async () => {
+    const userAdmin = await User.findAll({
+        email: 'henrique@test.com'
+    });
+    if(!userAdmin){
+        await User.create({
+            name: 'Henrique Queiroz',
+            email: 'henrique@test.com',
+            password: 'any_password'
+        })
+    }
+}
+
+const startApp = async () => {
+  try {
+    const connection = await sequelize.sync();
+    await seedData();
+    app.listen(3000);
+    console.log('app listening to port 3000');
+  } catch (error) {
+      console.log(error)
+  }
+};
+
+startApp();
