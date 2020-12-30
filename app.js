@@ -48,7 +48,7 @@ const seedData = async () => {
 
 const startApp = async () => {
   try {
-    const connection = await sequelize.sync({force: true});
+    const connection = await sequelize.sync();
     await seedData();
     app.listen(3000);
     console.log('app listening to port 3000');
