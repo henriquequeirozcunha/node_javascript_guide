@@ -3,6 +3,9 @@ const { getCurrentUser } = require('../../util/session')
 
 exports.seedData = async () => {
     const user = await getCurrentUser()
-    await user.createCart()
+    const userCart = await user.getCart()
+    if(userCart.lentgh == 0){
+        await user.createCart()
+    }
 }
 
