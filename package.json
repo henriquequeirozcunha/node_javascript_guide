@@ -11,6 +11,7 @@
   "author": "Henrique Queiroz Cunha",
   "license": "ISC",
   "devDependencies": {
+    "git-commit-msg-linter": "^3.0.0",
     "nodemon": "^1.18.3"
   },
   "dependencies": {
