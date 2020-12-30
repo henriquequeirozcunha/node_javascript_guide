@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const { getCurrentUserId, getCurrentUser } = require('../util/session')
 
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
@@ -14,25 +15,26 @@ exports.postAddProduct = async (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   try {
-    const result = await Product.create({
+    // const userId = await getCurrentUserId();
+    // const result = await Product.create({
+    //   title,
+    //   price,
+    //   imageUrl,
+    //   description,
+    //   userId
+    // });
+    const user = await getCurrentUser();
+    const result = await user.createProduct({
       title,
       price,
       imageUrl,
-      description,
-    });
+      description
+    })
     console.log('Product created successfully');
     res.redirect('/admin/products')
   } catch (error) {
     console.log(error);
   }
-
-  // const product = new Product(null, title, imageUrl, description, price);
-  // product
-  //   .save()
-  //   .then(() => {
-  //     res.redirect('/');
-  //   })
-  //   .catch(err => console.log(err));
 };
 
 exports.getEditProduct = async (req, res, next) => {
@@ -82,7 +84,9 @@ exports.postEditProduct = async (req, res, next) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.findAll();
+    // const products = await Product.findAll();
+    const user = await getCurrentUser();
+    const products = await user.getProducts();
     res.render('admin/products', {
       prods: products,
       pageTitle: 'Admin Products',
